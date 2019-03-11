@@ -49,6 +49,8 @@ void delete_bst(Bst bst)
 
 }
 
+
+
 /**
 *** @return The depth of the BST
 */
@@ -62,6 +64,8 @@ int get_depth(Bst bst)
 /**
 *** Adds a value to the BST
 */
+void insert(Bst* start_node, Bst new_node);
+
 void add(Bst* bst, int value)
 {
   Bst new_node = (Bst)malloc(sizeof(struct Node));
@@ -73,15 +77,33 @@ void add(Bst* bst, int value)
     *bst = new_node;
     return;
   }
-  if (value <= (*bst)->value)
+  insert(bst, new_node);
+  // if (value <= (*bst)->value)
+  // {
+  //   (*bst)->left = new_node;
+  // }else
+  // {
+  //   (*bst)->right = new_node;
+  // }
+}
+
+void insert(Bst* start_node, Bst new_node)
+{
+  if (new_node->value <= (*start_node)->value)
   {
-    (*bst)->left = new_node;
+    if ((*start_node)->left == 0)
+    {
+      (*start_node)->left = new_node;
+    }
+    insert((*start_node)->left, new_node);
   }else
   {
-    (*bst)->right = new_node;
+    if ((*start_node)->right == 0)
+    {
+      (*start_node)->right = new_node;
+    }
+    insert((*start_node)->right, new_node);
   }
-
-
 }
 
 /**
