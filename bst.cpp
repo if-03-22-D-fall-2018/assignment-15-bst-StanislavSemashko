@@ -34,7 +34,19 @@ Bst new_bst()
 
 void delete_bst(Bst bst)
 {
-  if(bst != 0) sfree(bst);
+  if(bst != 0)
+  {
+    if (bst->left != 0)
+    {
+      sfree(bst->left);
+    }
+    if (bst->right != 0)
+    {
+      sfree(bst->right);
+    }
+    sfree(bst);
+  }
+
 }
 
 /**
@@ -56,7 +68,20 @@ void add(Bst* bst, int value)
   new_node->value = value;
   new_node->left = 0;
   new_node->right = 0;
-  *bst = new_node;
+  if (*bst == 0)
+  {
+    *bst = new_node;
+    return;
+  }
+  if (value <= (*bst)->value)
+  {
+    (*bst)->left = new_node;
+  }else
+  {
+    (*bst)->right = new_node;
+  }
+
+
 }
 
 /**
