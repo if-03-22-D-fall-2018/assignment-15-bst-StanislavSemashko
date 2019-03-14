@@ -56,15 +56,28 @@ void delete_bst(Bst bst)
 */
 int get_depth(Bst bst)
 {
+
+  int left_len = 0;
+  int right_len = 0;
   if (bst == 0)return 0;
-  if (bst->left != 0 || bst->right != 0)return 2;
- return 1;
+  if (bst->left != 0)
+  {
+    left_len++;
+    left_len = get_depth(bst->left);
+  }
+  if (bst->right != 0)
+  {
+    right_len++;
+    right_len = get_depth(bst->right);
+  }
+if (left_len > right_len)return left_len +1;
+return right_len +1;
 }
 
 /**
 *** Adds a value to the BST
 */
-void insert(Bst* start_node, Bst new_node);
+void insert(Bst start_node, Bst new_node);
 
 void add(Bst* bst, int value)
 {
@@ -77,32 +90,32 @@ void add(Bst* bst, int value)
     *bst = new_node;
     return;
   }
-  insert(bst, new_node);
-  // if (value <= (*bst)->value)
-  // {
-  //   (*bst)->left = new_node;
-  // }else
-  // {
-  //   (*bst)->right = new_node;
-  // }
+  insert(*bst, new_node);
 }
 
-void insert(Bst* start_node, Bst new_node)
+void insert(Bst start_node, Bst new_node)
 {
-  if (new_node->value <= (*start_node)->value)
+  if (new_node->value <= start_node->value)
   {
-    if ((*start_node)->left == 0)
+    if (start_node->left == 0)
     {
-      (*start_node)->left = new_node;
+      start_node->left = new_node;
     }
-    insert((*start_node)->left, new_node);
-  }else
+    else
+    {
+      insert(start_node->left, new_node);
+    }
+  }
+  else
   {
-    if ((*start_node)->right == 0)
+    if (start_node->right == 0)
     {
-      (*start_node)->right = new_node;
+      start_node->right = new_node;
     }
-    insert((*start_node)->right, new_node);
+    else
+    {
+      insert(start_node->right, new_node);
+    }
   }
 }
 
