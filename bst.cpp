@@ -36,15 +36,9 @@ void delete_bst(Bst bst)
 {
   if(bst != 0)
   {
-    if (bst->left != 0)
-    {
-      sfree(bst->left);
-    }
-    if (bst->right != 0)
-    {
-      sfree(bst->right);
-    }
-    sfree(bst);
+     delete_bst(bst->left);
+     delete_bst(bst->right);
+     sfree(bst);
   }
 
 }
@@ -59,8 +53,7 @@ int get_depth(Bst bst)
 
   if (bst == 0)return 0;
   if (bst->right == 0 && bst->left == 0)return 1;
-  if (get_depth(left_subtree(bst)> get_depth(right_subtree(bstr)))return 1+get_depth(left_subtree(bst)));
-
+  if (get_depth(left_subtree(bst)) > get_depth(right_subtree(bst)))return 1+get_depth(left_subtree(bst));
   return 1+get_depth(right_subtree(bst));
 }
 
@@ -146,7 +139,18 @@ Bst right_subtree(Bst root)
 */
 int traverse_pre_order(Bst bst, int *elements, int start)
 {
-  return 0;
+  if(bst != 0)
+  {
+    elements[start] = bst->value;
+ if(get_depth(bst) > 0)
+ {
+   start+=1;
+   start = traverse_pre_order(bst->left, elements, start);
+   start = traverse_pre_order(bst->right, elements, start);
+
+ }
+}
+return start;
 }
 
 /**
@@ -159,7 +163,20 @@ int traverse_pre_order(Bst bst, int *elements, int start)
 */
 int traverse_in_order(Bst bst, int *elements, int start)
 {
-  return 0;
+  if(bst != 0)
+  {
+    if(bst->left != 0)
+    {
+      start = traverse_in_order(bst->left, elements, start);
+    }
+    elements[start] = bst->value;
+    start+=1;
+    if(bst->right != 0)
+    {
+      start = traverse_in_order(bst->right, elements, start);
+    }
+  }
+  return start;
 }
 
 /**
@@ -172,7 +189,20 @@ int traverse_in_order(Bst bst, int *elements, int start)
 */
 int traverse_post_order(Bst bst, int *elements, int start)
 {
-  return 0;
+  if(bst != 0)
+  {
+      if(bst->left != 0)
+      {
+        start = traverse_post_order(bst->left, elements, start);
+      }
+      if(bst->right != 0)
+      {
+        start = traverse_post_order(bst->right, elements, start);
+      }
+      elements[start] = bst->value;
+      start+=1;
+  }
+  return start;
 }
 
 /**
@@ -183,7 +213,18 @@ int traverse_post_order(Bst bst, int *elements, int start)
 */
 bool are_equal(Bst bst1, Bst bst2)
 {
-  return false;
+  if(bst1 == 0)
+  {
+      return bst2 == 0;
+  }
+    else if(get_depth(bst1) == get_depth(bst2))
+    {
+      if(bst1->value == bst2->value)
+      {
+        return are_equal(bst1->left, bst2->left) && are_equal(bst1->right, bst2->right);
+      }
+    }
+    return false;
 }
 
 /**
@@ -195,7 +236,15 @@ bool are_equal(Bst bst1, Bst bst2)
 */
 void most_left_longest_branch(Bst bst, Bst* branch)
 {
-
+  if(bst != 0){
+      if(get_depth(bst->right) > get_depth(bst->left)){
+        add(branch, bst->value);
+        most_left_longest_branch(&(*bst->right), branch);
+      }else if(get_depth(bst->right) == get_depth(bst->left) || get_depth(bst->right) < get_depth(bst->left)){
+        add(branch, bst->value);
+        most_left_longest_branch(&(*bst->left), branch);
+      }
+  }
 }
 
 /**
@@ -205,5 +254,27 @@ void most_left_longest_branch(Bst bst, Bst* branch)
 */
 int get_number_of_subtrees(Bst bst)
 {
-  return 0;
+  int count = 0;
+  if(bst != 0)
+  {
+    if(bst->left == 0 && bst->right == 0) return count;
+    if(bst->left == 0 && bst->right != 0)
+    {
+      count+=1;
+      count += get_number_of_subtrees(bst->right);
+    }
+    else if(bst->left != 0 && bst->right == 0)
+    {
+      count+=1;
+      count += get_number_of_subtrees(bst->left);
+    }
+    else
+    {
+      count+=2;
+      count += get_number_of_subtrees(bst->left);
+      count += get_number_of_subtrees(bst->right);
+    }
+    return count;
+  }
+  return -1;
 }
